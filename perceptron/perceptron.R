@@ -43,13 +43,10 @@ drawplot <- function(n)
   {
   int_w <- -wdf[n,1]/wdf[n,3]
   slope_w <- -wdf[n,2]/wdf[n,3]
-  a <- ggplot(X.plot,aes(X.plot$X1,D.plot$X2))+
+  a <- ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
     geom_point(aes(color=as.factor(Y)),show.legend = F)+
     geom_abline(intercept = intercept,slope=slope)+
     geom_abline(intercept = int_w,slope=slope_w,linetype="dashed")+
     labs(x="X1",y="X2",color="")
-  print(a)
   }
 }
-
-drawplot(30)
