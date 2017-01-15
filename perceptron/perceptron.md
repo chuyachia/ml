@@ -6,7 +6,7 @@ This document demonstrates the application of the Perceptron Learning Algorithm 
 Preparing the data
 ------------------
 
-First, we generate 100 random points with coordinates x1, x2 and an intercept x0:
+First, we randomly generate 100 points with coordinates x1, x2 and an intercept x0 as our training data:
 
 ``` r
 X1 <- runif(100,min=-1,max=1)
@@ -36,7 +36,7 @@ library(ggplot2)
 
 ``` r
 ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
-    geom_point(aes(color=as.factor(Y)),show.legend = F)+
+    geom_point(aes(color=as.factor(Y)),show.legend = T)+
     geom_abline(intercept = intercept,slope=slope)+
     labs(x="X1",y="X2",color="")
 ```
@@ -46,7 +46,9 @@ ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
 PLA
 ---
 
-PLA classfies a point according to the sign of dot product of the x vector of that point (x0,x1 , x2) and the weight vector (w0, w1, w2). The goal of PLA is to find a optimal weight vector such that sign(sum(wixi)) would correctly predict yi for all point i in our data. To do so, the algorithm randomly picks a misclassified point in each round and updates the weight vector by adding ynxn. By doing so, PLA corrects the classification of the given point. These steps are repeated until all points are correctly classified.
+### Training
+
+PLA classfies a point according to the sign of dot product of the x vector of that point (x0,x1 , x2) and the weight vector (w0, w1, w2). The goal of PLA is to find a optimal weight vector such that sign(sum(wixi)) would correctly predict yi for all point i in our data. To do so, the algorithm randomly picks a misclassified point in each round and updates the weight vector by adding the product of the scalar yn and the vector xn to it. By doing so, PLA corrects the classification of the given point. These steps are repeated until all training points are correctly classified.
 
 ``` r
 ## Initialize
@@ -67,10 +69,10 @@ while (any(sign(Y_hat)!=sign(Y)))
 }
 ```
 
-The final weights are shown below by the dashed line :
+The final weights of the trained model are shown below by the dashed line which is close to the original separating line :
 
 ``` r
-drawplot <- function(n)
+drawplot <- function(n,name)
 {
   if (!n %in% seq(1,count+1))
   {
@@ -84,16 +86,16 @@ drawplot <- function(n)
     geom_point(aes(color=as.factor(Y)),show.legend = F)+
     geom_abline(intercept = intercept,slope=slope)+
     geom_abline(intercept = int_w,slope=slope_w,linetype="dashed")+
-    labs(x="X1",y="X2",color="")
+    labs(x="X1",y="X2",color="",title=name)
   }
 }
-pf <-drawplot(count+1)
+pf <- drawplot(count+1,"Final round")
 pf
 ```
 
 ![](perceptron_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
-Resulting weights of the last four rounds :
+We can also see the resulting weights of the last four rounds :
 
 ``` r
 library(gridExtra)
@@ -102,10 +104,12 @@ library(gridExtra)
     ## Warning: package 'gridExtra' was built under R version 3.2.5
 
 ``` r
-p1 <- drawplot(count-2)
-p2 <- drawplot(count-1)
-p3 <- drawplot(count)
+p1 <- drawplot(count-2,sprintf("Round %i",count-3))
+p2 <- drawplot(count-1,sprintf("Round %i",count-2))
+p3 <- drawplot(count,sprintf("Round %i",count-1))
 grid.arrange(p1, p2,p3,pf,ncol=2)
 ```
 
 ![](perceptron_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
+### Training

@@ -33,7 +33,7 @@ while (any(sign(Y_hat)!=sign(Y)))
 }
 
 ## Draw plot
-drawplot <- function(n)
+drawplot <- function(n,name,print=TRUE)
 {
   if (!n %in% seq(1,count+1))
   {
@@ -47,6 +47,6 @@ drawplot <- function(n)
     geom_point(aes(color=as.factor(Y)),show.legend = F)+
     geom_abline(intercept = intercept,slope=slope)+
     geom_abline(intercept = int_w,slope=slope_w,linetype="dashed")+
-    labs(x="X1",y="X2",color="")
+    labs(x="X1",y="X2",color="",title=name)
   }
 }
