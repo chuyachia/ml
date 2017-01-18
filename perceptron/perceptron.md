@@ -1,4 +1,4 @@
-Perceptron Learning Algorithm
+Perceptron
 ================
 
 This document demonstrates the application of the Perceptron Learning Algorithm (PLA) to some linearly separable 2D data for the purpose of classification.
@@ -15,7 +15,7 @@ X0 <- rep(1,100)
 X <- cbind(X0,X1,X2)
 ```
 
-To classify these points, We find a random line on the plane and assign y to +1 for points above the line and -1 for those below.
+We then generate a random line on the plane as the target function. Points above the line are labeled \(y= +1\) whereas those below are labeled \(y= -1\).
 
 ``` r
 PX1 <-runif(2,min=-1,max=1)
@@ -26,7 +26,7 @@ Y <- ifelse(X2>intercept+slope*X1,+1,-1)
 X.plot <- as.data.frame(X) # dataframe for plot use
 ```
 
-The points and the seperating line look like the following :
+The points and the target function look like this on a 2D plane :
 
 ``` r
 library(ggplot2)
@@ -43,12 +43,25 @@ ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
 
 ![](perceptron_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
+Hypothesis
+----------
+
+The hypothesis set of perceptron assign +1 or -1 to y according to the sign of the dot production of the vector \(x\) (containing x0, x1, x2) and a weight vector \(w\) (containing w0, w1, w2).
+
+\(h(x) = sign(w^tx)\)
+
 PLA
 ---
 
-### Training
+The goal of PLA is to find a set of optimal weights such that \(sign(w^tx_n)\) would correctly predict \(yn\) for all point \(n\) in our data.
 
-PLA classfies a point according to the sign of dot product of the x vector of that point (x0,x1 , x2) and the weight vector (w0, w1, w2). The goal of PLA is to find a optimal weight vector such that sign(sum(wixi)) would correctly predict yi for all point i in our data. To do so, the algorithm randomly picks a misclassified point in each round and updates the weight vector by adding the product of the scalar yn and the vector xn to it. By doing so, PLA corrects the classification of the given point. These steps are repeated until all training points are correctly classified.
+To do so, the algorithm randomly picks a misclassified point \(n\) in each round and updates the weight vector by adding the product of the scalar \(y_n\) and the vector \(x_n\) to it.
+
+\(w_{t+1} = w_t+ y_nx_n\)
+
+By doing so, PLA rotate the weight vector w towards the misclassified point since \(w_{t+1}x_n > w_tx_n\).
+
+These steps are repeated until all points are correctly classified.
 
 ``` r
 ## Initialize
@@ -69,7 +82,7 @@ while (any(sign(Y_hat)!=sign(Y)))
 }
 ```
 
-The final weights of the trained model are shown below by the dashed line which is close to the original separating line :
+The final weights of the trained model are shown below by the dashed line which is close to the original target function :
 
 ``` r
 drawplot <- function(n,name)
@@ -111,5 +124,3 @@ grid.arrange(p1, p2,p3,pf,ncol=2)
 ```
 
 ![](perceptron_files/figure-markdown_github/unnamed-chunk-7-1.png)
-
-### Training
