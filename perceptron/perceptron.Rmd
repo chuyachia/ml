@@ -33,7 +33,8 @@ Y <- ifelse(X2>intercept+slope*X1,+1,-1)
 X.plot <- as.data.frame(X) # dataframe for plot use
 ```
 
-The points and the target function look like this on a 2D plane :
+This is what the data points and the target function look like on a 2D plane :
+
 ```{r}
 library(ggplot2)
 ```
