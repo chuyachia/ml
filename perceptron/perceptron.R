@@ -1,5 +1,4 @@
-
-
+#### Perceptron learning algorithm ####
 ## Generate random points x1,x2 with intercept
 countvec <- NULL
 Eoutvec <- NULL

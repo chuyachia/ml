@@ -1,4 +1,4 @@
-#### logistic regression ####
+#### Logistic regression ####
 
 ## Cross-entropy error
 E <- function(x,y,z) 
