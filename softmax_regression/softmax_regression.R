@@ -20,6 +20,7 @@ batchs <- 10
 batchl <- ceiling(nrow(data.train)/batchs)
 epsilon <- 10^-4
 threshold <- 0.00005
+regu <- 0 # regularization : weight decay
 ## Initialization
 w <- matrix(rep(0,f*n),ncol=f)
 gradiant <- matrix(rep(0,f*n),ncol=f)
@@ -47,7 +48,7 @@ while(change>threshold)
   for (j in 1:(n-1))
   {  
     y.temp <- ifelse(y.train.b ==listy[j], 1,0)
-    gradiant[j,] <- -colSums(data.train.b*(y.temp-h.b[,j]))/nrow(data.train.b)
+    gradiant[j,] <- -colSums(data.train.b*(y.temp-h.b[,j]))/nrow(data.train.b)+regu*w[j,]
   }
   w <- w - rate*gradiant
   }
