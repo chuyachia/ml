@@ -1,9 +1,17 @@
 #### Softmax regression ####
+library(dplyr)
 ## Data
 data(iris)
 listy <- as.character(unique(iris$Species))
-data.train  <- as.matrix(iris[,-5])
-y.train <- as.character(iris[,5])
+data.train  <- as.matrix(iris %>% mutate(intercept = 1,
+               Sepal.L = (Sepal.Length-mean(Sepal.Length))/sd(Sepal.Length),
+               Sepal.W = (Sepal.Width-mean(Sepal.Width))/sd(Sepal.Width),
+               Petal.L = (Petal.Length-mean(Petal.Length))/sd(Petal.Length),
+               Petal.W = (Petal.Width- mean(Petal.Width))/sd(Petal.Width))%>%
+               select(-c(Species,Sepal.Length,Sepal.Width,Petal.Length,Petal.Width)))
+
+
+y.train <- iris %>% select(Species)
 
 ## Function
 hcal <- function(data,x){
@@ -19,7 +27,7 @@ f <- dim(data.train)[2]
 batchs <- 10
 batchl <- ceiling(nrow(data.train)/batchs)
 epsilon <- 10^-4
-threshold <- 0.00005
+threshold <- 0.000005
 regu <- 0 # regularization : weight decay
 ## Initialization
 w <- matrix(rep(0,f*n),ncol=f)
@@ -35,13 +43,13 @@ while(change>threshold)
   {
   if (i < batchl)
   {
-    y.train.b <- y.train[((i-1)*batchs+1):(i*batchs)]
+    y.train.b <- y.train[((i-1)*batchs+1):(i*batchs),]
     data.train.b <- data.train[((i-1)*batchs+1):(i*batchs),]
     h.b <- hcal(data.train.b,w)
   }
   else
   {
-    y.train.b <- y.train[((i-1)*batchs+1):dim(data.train)[1]]
+    y.train.b <- y.train[((i-1)*batchs+1):dim(data.train)[1],]
     data.train.b <- data.train[((i-1)*batchs+1):dim(data.train)[1],]
     h.b <- hcal(data.train.b,w)
   }
