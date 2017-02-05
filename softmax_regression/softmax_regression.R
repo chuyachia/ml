@@ -1,72 +1,126 @@
 #### Softmax regression ####
 library(dplyr)
+
 ## Data
 data(iris)
-listy <- as.character(unique(iris$Species))
-data.train  <- as.matrix(iris %>% mutate(intercept = 1,
+
+iris %>% group_by(Species) %>% summarize(MeanSepal.L = mean(Sepal.Length),
+                                      MeanSepal.W = mean(Sepal.Width),
+                                      MeanPetal.L = mean(Petal.Length),
+                                      MeanPetal.W = mean(Petal.Width))
+
+
+data_train  <- as.matrix(iris %>% mutate(intercept = 1,
                Sepal.L = (Sepal.Length-mean(Sepal.Length))/sd(Sepal.Length),
                Sepal.W = (Sepal.Width-mean(Sepal.Width))/sd(Sepal.Width),
                Petal.L = (Petal.Length-mean(Petal.Length))/sd(Petal.Length),
                Petal.W = (Petal.Width- mean(Petal.Width))/sd(Petal.Width))%>%
                select(-c(Species,Sepal.Length,Sepal.Width,Petal.Length,Petal.Width)))
 
+y_train <- data.frame(setosa= iris$Species=="setosa",
+                      versicolor= iris$Species=="versicolor",
+                      virginica= iris$Species=="virginica")
 
-y.train <- iris %>% select(Species)
+
+## Plot
+library(scatterplot3d)
+library(RColorBrewer)
+
+colors <- brewer.pal(3,name="Set2")
+colors <- colors[as.numeric(iris$Species)]
+scatterplot3d(iris[,1:3], pch = 16, color=colors,angle = 45)
+legend("top", legend = levels(iris$Species),
+       col =  brewer.pal(3,name="Set2"), pch = 16, 
+       inset = -0.2, xpd = TRUE, horiz = TRUE)
+##http://www.sthda.com/english/wiki/scatterplot3d-3d-graphics-r-software-and-data-visualization
 
 ## Function
-hcal <- function(data,x){
-  signal<- data %*% t(x)
+# calculate the probabilities of belonging to each type
+classprob <- function(x,w)
+{
+  signal<- x %*% t(w)
   signal <- exp(signal-apply(signal,1,function(row){return(max(row))}))
   return(sweep(signal,1,rowSums(signal),FUN= "/"))
 }
+# calculate the change of weight vectors
 norm_vec <- function(x) sqrt(sum(x^2))
+# calculate the gradient
+compugrad <- function(x,y,w)
+{
+  prob <- classprob(x,w)
+  for (j in 1:n) # to n-1 would give the same result since softmax is overparameterized
+  {  
+    gradient[j,] <- -colMeans(x*(y[,j]-prob[,j]))
+  }
+  return(gradient)
+}
+# calculate the cross-entropy error
+compuerror <-function(x,y,w)
+{
+  prob <- classprob(x,w)
+  E <- 0
+  for ( j in 1:n)
+  {
+    E <- E-mean(y[,j]*log(prob[,j]))
+  }
+  return(E)
+}
+
 ## Parameter
 rate <- 0.1
-n <- length(listy)
-f <- dim(data.train)[2]
-batchs <- 10
-batchl <- ceiling(nrow(data.train)/batchs)
+batchs <- 10 # batch gradient descent
 epsilon <- 10^-4
-threshold <- 0.000005
-regu <- 0 # regularization : weight decay
+threshold <- 0.00001
+
+batchl <- ceiling(nrow(data_train)/batchs)
+n <- ncol(y_train)
+f <- dim(data_train)[2]
+
 ## Initialization
 w <- matrix(rep(0,f*n),ncol=f)
-gradiant <- matrix(rep(0,f*n),ncol=f)
+gradient <- matrix(rep(0,f*n),ncol=f)
 Evec <- NULL
 run <- 0
 change <- 3
-E <- 100
 
+## Algorithm
 while(change>threshold)
 {  
   for (i in 1:batchl)
   {
-  if (i < batchl)
-  {
-    y.train.b <- y.train[((i-1)*batchs+1):(i*batchs),]
-    data.train.b <- data.train[((i-1)*batchs+1):(i*batchs),]
-    h.b <- hcal(data.train.b,w)
+    if (i < batchl)
+    {
+      y_train_b <- y_train[((i-1)*batchs+1):(i*batchs),]
+      data_train_b <- data_train[((i-1)*batchs+1):(i*batchs),]
+    }
+    else
+    {
+      y_train_b <- y_train[((i-1)*batchs+1):dim(data_train)[1],]
+      data_train_b <- data_train[((i-1)*batchs+1):dim(data_train)[1],]
+    }
+    gradient <- compugrad(data_train_b,y_train_b,w) 
+    
+    ## check gradient
+    #check <- matrix(0,nrow=dim(gradient)[1],ncol=dim(gradient)[2])
+    #for (j in 1:dim(gradient)[1])
+    #{
+    #  for (k in 1 :dim(gradient)[2])
+    #  {
+    #    w_plus <- w
+    #    w_plus[j,k] <- w_plus[j,k]+epsilon
+    #    E_plus <- compuerror(data_train_b,y_train_b,w_plus)  
+    #    w_moins <- w
+    #    w_moins[j,k] <- w_moins[j,k]-epsilon
+    #    E_moins <- compuerror(data_train_b,y_train_b,w_moins)  
+    #    check[j,k] <-abs(gradient[j,k]-(E_plus-E_moins)/(epsilon*2)) < epsilon
+    #  }
+    #}
+    #if (mean(check)!=1)
+    #{break}
+    
+    w <- w - rate*gradient
   }
-  else
-  {
-    y.train.b <- y.train[((i-1)*batchs+1):dim(data.train)[1],]
-    data.train.b <- data.train[((i-1)*batchs+1):dim(data.train)[1],]
-    h.b <- hcal(data.train.b,w)
-  }
-  for (j in 1:(n-1))
-  {  
-    y.temp <- ifelse(y.train.b ==listy[j], 1,0)
-    gradiant[j,] <- -colSums(data.train.b*(y.temp-h.b[,j]))/nrow(data.train.b)+regu*w[j,]
-  }
-  w <- w - rate*gradiant
-  }
-  h <- hcal(data.train,w)
-  E <- 0
-  for ( j in 1:n)
-  {
-    y.temp <- ifelse(y.train ==listy[j], 1,0)
-    E <- E-sum(y.temp*log(h[,j]))/nrow(data.train)
-  }
+  E <- compuerror(data_train,y_train,w)
   Evec <- rbind(Evec,E)
   if (run >1)
   {
@@ -75,10 +129,12 @@ while(change>threshold)
   run <-run +1
 }
 
-plot(Evec,type="l") # Cross entropy error decreases
+## Result
+plot(Evec,type="l",ylab="Error",xlab="Round") # Cross entropy error decreases
 
-signal<- data.train %*% t(w)
-signal <- exp(signal-apply(signal,1,function(row){return(max(row))}))
-h <- sweep(signal,1,rowSums(signal),FUN= "/")
-y_hat <- apply(h,1, function(row){return(listy[which(row==max(row))])})
-length(which(y_hat==y.train))/nrow(data.train) # Classification error
+y_prob <- classprob(data_train,w)
+listy <- unique(iris$Species)
+y_hat <-  apply(y_prob,1, function(row){return(listy[which(row==max(row))])})
+length(which(y_hat!=iris$Species)) # Classification error
+
+table(Species=iris$Species,Predicted=y_hat)

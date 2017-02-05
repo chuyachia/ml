@@ -117,7 +117,7 @@ while (w.var>=thres)
 Result
 ------
 
-The following plot shows that the average cross-entropy error of the training data diminishes over rounds.
+The following plot shows that the average cross-entropy error of the training data decreases over rounds.
 
 ``` r
 plot(e.vec,type="l",xlab="Round",ylab="Average cross-entropy error")
@@ -125,7 +125,7 @@ plot(e.vec,type="l",xlab="Round",ylab="Average cross-entropy error")
 
 ![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
-Using the final weights vector, we can successfully tell all the Setosas from the Non-Setosas in our training data. This allows us to say that our algorithm is working correctly.
+Using the final weights vector, we compute the signal for every observation and decides that a given observation is a Setosa if the logistic function on its signal results in a value that is greater than 0.5. In probabilistic terms, this means that the probability that the given observation is Setosa is greater than 0.5. By doing so, we successfully distinguished all the Setosas from the Non-Setosas in our training data. This allows us to say that our algorithm is working correctly.
 
 ``` r
 Y.sig <- exp(X %*% t(w))/(1+exp(X%*%t(w)))
