@@ -1,12 +1,12 @@
 Perceptron
 ================
 
-This document demonstrates the application of the Perceptron Learning Algorithm (PLA) to some linearly separable 2D data for the purpose of classification.
+In this document, I use the Perceptron Learning Algorithm (PLA) to classify some linearly separable 2D data.
 
 Preparing the data
 ------------------
 
-First, we randomly generate 100 points with coordinates x1, x2 and an intercept x0 as our training data:
+First, I randomly generate 100 data points with coordinates x1, x2 and an intercept x0 for training.
 
 ``` r
 X1 <- runif(100,min=-1,max=1)
@@ -15,7 +15,7 @@ X0 <- rep(1,100)
 X <- cbind(X0,X1,X2)
 ```
 
-We then generate a random line on the plane as the target function. Points above the line are labeled \(y= +1\) whereas those below are labeled \(y= -1\).
+I then create a random line on the plane as the target function. Points above the line are labeled \(y= +1\) whereas those below are labeled \(y= -1\).
 
 ``` r
 PX1 <-runif(2,min=-1,max=1)
@@ -53,13 +53,13 @@ The hypothesis set of perceptron assign +1 or -1 to y according to the sign of t
 PLA
 ---
 
-The goal of PLA is to find a set of optimal weights such that \(sign(w^tx_n)\) would correctly predict \(yn\) for all point \(n\) in our data.
+The goal of PLA is to find a set of optimal weights such that \(h(x)\) would correctly predict \(y\) for all the points in our training data.
 
-To do so, the algorithm randomly picks a misclassified point \(n\) in each round and updates the weight vector by adding the product of the scalar \(y_n\) and the vector \(x_n\) to it.
+To do so, the algorithm randomly picks a misclassified point \(n\) in each round and updates the weight vector by adding the product of the scalar \(y_{n}\) and the vector \(x_{n}\) to it.
 
-\(w_{t+1} = w_t+ y_nx_n\)
+\(w_{t+1} = w_t+ y_{n}x_{n}\)
 
-By doing so, PLA rotate the weight vector w towards the misclassified point since \(w_{t+1}x_n > w_tx_n\).
+By doing so, PLA rotates the weight vector w towards the misclassified point since \(w_{t+1}x_n > w_tx_n\).
 
 These steps are repeated until all points are correctly classified.
 
@@ -82,7 +82,10 @@ while (any(sign(Y_hat)!=sign(Y)))
 }
 ```
 
-The final weights of the trained model are shown below by the dashed line which is close to the original target function :
+Result
+------
+
+The final weights obtained from the algorithm are shown below by the dashed line. They are close to the original target function :
 
 ``` r
 drawplot <- function(n,name)
