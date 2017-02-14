@@ -1,12 +1,12 @@
 Perceptron
 ================
 
-In this document, I use the Perceptron Learning Algorithm (PLA) to classify some linearly separable 2D data.
+In this document, I will build a Perceptron Learning Algorithm (PLA) to classify some linearly separable 2D data.
 
 Preparing the data
 ------------------
 
-First, I randomly generate 100 data points with coordinates x1, x2 and an intercept x0 for training.
+First, I randomly generate 100 data points with coordinates *\(x_1\)*, *\(x_2\)* and an intercept *\(x_0\)*. These are the data that I am going to use to train the model.
 
 ``` r
 X1 <- runif(100,min=-1,max=1)
@@ -26,13 +26,11 @@ Y <- ifelse(X2>intercept+slope*X1,+1,-1)
 X.plot <- as.data.frame(X) # dataframe for plot use
 ```
 
-This is what the data points and the target function look like on a 2D plane :
+Here is what the data points and the target function look like on a 2D plane :
 
 ``` r
 library(ggplot2)
 ```
-
-    ## Warning: package 'ggplot2' was built under R version 3.2.5
 
 ``` r
 ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
@@ -41,14 +39,14 @@ ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
     labs(x="X1",y="X2",color="")
 ```
 
-![](perceptron_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](perceptron_files/figure-markdown_github/unnamed-chunk-4-1.png)<!-- -->
 
 Hypothesis
 ----------
 
-The hypothesis set of perceptron assign +1 or -1 to y according to the sign of the dot production of the vector \(x\) (containing x0, x1, x2) and a weight vector \(w\) (containing w0, w1, w2).
+The hypothesis set of Perceptron assigns \(+1\) or \(-1\) to \(y\) according to the sign of the dot production of the vector \(x\) (containing *\(x_0\)*, *\(x_1\)*, *\(x_2\)*) and a weight vector \(w\) (containing *\(w_0\)*, *\(w_1\)*, *\(w_2\)*).
 
-\(h(x) = sign(w^tx)\)
+\(h(x) = sign(w^Tx)\)
 
 PLA
 ---
@@ -59,7 +57,7 @@ To do so, the algorithm randomly picks a misclassified point \(n\) in each round
 
 \(w_{t+1} = w_t+ y_{n}x_{n}\)
 
-By doing so, PLA rotates the weight vector w towards the misclassified point since \(w_{t+1}x_n > w_tx_n\).
+By doing so, PLA rotates the weight vector \(w\) towards the misclassified point since \(w_{t+1}^Tx_n > w_t^Tx_n\).
 
 These steps are repeated until all points are correctly classified.
 
@@ -109,21 +107,16 @@ pf <- drawplot(count+1,"Final round")
 pf
 ```
 
-![](perceptron_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](perceptron_files/figure-markdown_github/unnamed-chunk-6-1.png)<!-- -->
 
 We can also see the resulting weights of the last four rounds :
 
 ``` r
 library(gridExtra)
-```
-
-    ## Warning: package 'gridExtra' was built under R version 3.2.5
-
-``` r
 p1 <- drawplot(count-2,sprintf("Round %i",count-3))
 p2 <- drawplot(count-1,sprintf("Round %i",count-2))
 p3 <- drawplot(count,sprintf("Round %i",count-1))
 grid.arrange(p1, p2,p3,pf,ncol=2)
 ```
 
-![](perceptron_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](perceptron_files/figure-markdown_github/unnamed-chunk-7-1.png)<!-- -->

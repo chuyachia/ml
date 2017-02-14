@@ -8,12 +8,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-
-In this document, I use the Perceptron Learning Algorithm (PLA) to classify some linearly separable 2D data.
+In this document, I will build a Perceptron Learning Algorithm (PLA) to classify some linearly separable 2D data.
 
 ## Preparing the data
 
-First, I randomly generate 100 data points with coordinates x1, x2 and an intercept x0 for training.
+First, I randomly generate 100 data points with coordinates *$x_1$*, *$x_2$* and an intercept *$x_0$*. These are the data that I am going to use to train the model.
 
 ```{r}
 X1 <- runif(100,min=-1,max=1)
@@ -47,9 +46,9 @@ ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
 ```
 
 ## Hypothesis 
-The hypothesis set of perceptron assign +1 or -1 to y according to the sign of the dot production of the vector $x$ (containing x0, x1, x2) and a weight vector $w$ (containing w0, w1, w2).
+The hypothesis set of Perceptron assigns $+1$ or $-1$ to $y$ according to the sign of the dot production of the vector $x$ (containing *$x_0$*, *$x_1$*, *$x_2$*) and a weight vector $w$ (containing *$w_0$*, *$w_1$*, *$w_2$*).
 
-$h(x) = sign(w^tx)$
+$h(x) = sign(w^Tx)$
 
 ## PLA
 The goal of PLA is to find a set of optimal weights such that $h(x)$ would correctly predict $y$ for all the points in our training data. 
@@ -58,7 +57,7 @@ To do so, the algorithm randomly picks a misclassified point $n$ in each round a
 
 $w_{t+1} = w_t+ y_{n}x_{n}$  
 
-By doing so, PLA rotates the weight vector w towards the misclassified point since $w_{t+1}x_n > w_tx_n$.
+By doing so, PLA rotates the weight vector $w$ towards the misclassified point since $w_{t+1}^Tx_n > w_t^Tx_n$.
 
 These steps are repeated until all points are correctly classified. 
 
