@@ -1,4 +1,4 @@
-Building a Logistic regression model
+Building a logistic regression model
 ================
 
 In this document, I will build a logistic regression model from scratch and use it for binary classification on the iris data set.
@@ -11,6 +11,8 @@ The iris data set includes the length and the width of the petals and sepals of 
 ``` r
 library(dplyr)
 ```
+
+    ## Warning: package 'dplyr' was built under R version 3.2.5
 
     ## 
     ## Attaching package: 'dplyr'
@@ -25,6 +27,11 @@ library(dplyr)
 
 ``` r
 library(ggplot2)
+```
+
+    ## Warning: package 'ggplot2' was built under R version 3.2.5
+
+``` r
 data(iris)
 D <- iris %>% select(-c(Petal.Length,Petal.Width))
 ```
@@ -35,7 +42,7 @@ A quick summary table shows that the three species of iris differ in the average
 D %>% group_by(Species) %>% summarize(meanSepal.L= mean(Sepal.Length),meanSepal.W= mean(Sepal.Width))
 ```
 
-    ## # A tibble: 3 x 3
+    ## # A tibble: 3 × 3
     ##      Species meanSepal.L meanSepal.W
     ##       <fctr>       <dbl>       <dbl>
     ## 1     setosa       5.006       3.428
@@ -65,7 +72,7 @@ ggplot(data.frame(x=c(-10,10)), aes(x)) +
   xlab("s")+ylab(expression(theta))
 ```
 
-![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-4-1.png)<!-- -->
+![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 The algorithm employed to find the optimal weights vector is the gradient descent, which consists of updating the weights vector to the opposite direction of the gradient of the cost function. The cost function used is the cross-entropy error function.
 
@@ -139,7 +146,7 @@ ggplot(GraphD,aes(Round,Error))+
   ylab("Average cross-entropy error")
 ```
 
-![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-7-1.png)<!-- -->
+![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 Using the final weights vector obtained from the algorithm, I compute the signal for every observation and decide that a given observation is a Setosa if the logistic function on its signal results in a value that is greater than 0.5. In probabilistic terms, this means that the probability that the given observation is Setosa is greater than 0.5. By doing so, I successfully distinguished all the Setosas from the Non-Setosas in the training data. This shows that the algorithm that I built is working correctly.
 
