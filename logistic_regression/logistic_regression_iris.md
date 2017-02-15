@@ -10,28 +10,7 @@ The iris data set includes the length and the width of the petals and sepals of 
 
 ``` r
 library(dplyr)
-```
-
-    ## Warning: package 'dplyr' was built under R version 3.2.5
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 library(ggplot2)
-```
-
-    ## Warning: package 'ggplot2' was built under R version 3.2.5
-
-``` r
 data(iris)
 D <- iris %>% select(-c(Petal.Length,Petal.Width))
 ```

@@ -30,16 +30,13 @@ Here is what the data points and the target function look like on a 2D plane :
 
 ``` r
 library(ggplot2)
-```
-
-``` r
 ggplot(X.plot,aes(X.plot$X1,X.plot$X2))+
     geom_point(aes(color=as.factor(Y)),show.legend = T)+
     geom_abline(intercept = intercept,slope=slope)+
     labs(x="X1",y="X2",color="")
 ```
 
-![](perceptron_files/figure-markdown_github/unnamed-chunk-4-1.png)<!-- -->
+![](perceptron_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 Hypothesis
 ----------
@@ -107,7 +104,7 @@ pf <- drawplot(count+1,"Final round")
 pf
 ```
 
-![](perceptron_files/figure-markdown_github/unnamed-chunk-6-1.png)<!-- -->
+![](perceptron_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 We can also see the resulting weights of the last four rounds :
 
@@ -119,4 +116,4 @@ p3 <- drawplot(count,sprintf("Round %i",count-1))
 grid.arrange(p1, p2,p3,pf,ncol=2)
 ```
 
-![](perceptron_files/figure-markdown_github/unnamed-chunk-7-1.png)<!-- -->
+![](perceptron_files/figure-markdown_github/unnamed-chunk-6-1.png)

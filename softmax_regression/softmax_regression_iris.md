@@ -10,27 +10,13 @@ Iris data set includes data on the length and width of the sepal and petal of th
 
 ``` r
 library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 iris %>% group_by(Species) %>% summarize(MeanSepal.L = mean(Sepal.Length),
                                       MeanSepal.W = mean(Sepal.Width),
                                       MeanPetal.L = mean(Petal.Length),
                                       MeanPetal.W = mean(Petal.Width))
 ```
 
-    ## # A tibble: 3 x 5
+    ## # A tibble: 3 × 5
     ##      Species MeanSepal.L MeanSepal.W MeanPetal.L MeanPetal.W
     ##       <fctr>       <dbl>       <dbl>       <dbl>       <dbl>
     ## 1     setosa       5.006       3.428       1.462       0.246
@@ -51,7 +37,7 @@ legend("top", legend = levels(iris$Species),
        inset = -0.2, xpd = TRUE, horiz = TRUE)
 ```
 
-![](softmax_regression_iris_files/figure-markdown_github/unnamed-chunk-2-1.png)<!-- -->
+![](softmax_regression_iris_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 The following codes normalize the four features that I will use to classify iris and create three response variables, one for each species, that take the value of \(1\) when an observation belongs to the species in question and 0 otherwise.
 
@@ -195,7 +181,7 @@ while(change>threshold)
 Result
 ------
 
-The following table summarizes the classification result using the final set of weights obtained from the algorithm. As can be seen from the table, the algorithm correctly classified all Setosas, misclassified two Versicolors as Virginicas and misclassified one Verginica as Versicolor. In other words, an in-sample accuracy of 98%, which is a proof that the model is working properly.
+The following table summarizes the classification result using the final set of weights obtained from the algorithm. As can be seen from the table, the algorithm correctly classified all Setosas, misclassified two Versicolors as Virginicas and misclassified one Verginica as Versicolor. In other words, the model achieves an accuracy of 98% in-sample, which is a proof that it is working properly.
 
 ``` r
 y_prob <- classprob(data_train,w)
