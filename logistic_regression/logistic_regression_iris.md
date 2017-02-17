@@ -31,12 +31,25 @@ D %>% group_by(Species) %>% summarize(meanSepal.L= mean(Sepal.Length),meanSepal.
 Before going on with the logistic regression, I first normalize the two features and add an intercept to each observation. Since I am doing binary classification, I label the output of iris who belong to the Setosa class as +1 and those who do not (Versicolors and Virginicas) as -1.
 
 ``` r
-X <- as.matrix(D  %>% mutate(Sepal.L.Norm =
-                               Sepal.Length-mean(Sepal.Length),Sepal.W.Norm =
-                               Sepal.Width-mean(Sepal.Width),intercept=1)%>%
+X <- as.matrix(D  %>% mutate(Sepal.L.Norm = Sepal.Length-mean(Sepal.Length),
+                             Sepal.W.Norm=Sepal.Width-mean(Sepal.Width),intercept=1)%>%
                  select(-c(Species,Sepal.Length,Sepal.Width))) 
 Y <- ifelse(D$Species=="setosa",1,-1)
 ```
+
+Here is what the data look like:
+
+``` r
+ggplot(as.data.frame(X),aes(Sepal.L.Norm,Sepal.W.Norm,color=as.factor(Y)))+
+  geom_point()+ 
+  xlab("Normalized Sepal length")+
+  ylab("Normalized Sepal width")+
+  scale_colour_discrete(name="Species",
+                            breaks=c(1,-1),
+                            labels=c("Setosa","Non-Setosa")) 
+```
+
+![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 Logistic regression
 -------------------
@@ -51,7 +64,7 @@ ggplot(data.frame(x=c(-10,10)), aes(x)) +
   xlab("s")+ylab(expression(theta))
 ```
 
-![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 The algorithm employed to find the optimal weights vector is the gradient descent, which consists of updating the weights vector to the opposite direction of the gradient of the cost function. The cost function used is the cross-entropy error function.
 
@@ -125,7 +138,7 @@ ggplot(GraphD,aes(Round,Error))+
   ylab("Average cross-entropy error")
 ```
 
-![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](logistic_regression_iris_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 Using the final weights vector obtained from the algorithm, I compute the signal for every observation and decide that a given observation is a Setosa if the logistic function on its signal results in a value that is greater than 0.5. In probabilistic terms, this means that the probability that the given observation is Setosa is greater than 0.5. By doing so, I successfully distinguished all the Setosas from the Non-Setosas in the training data. This shows that the algorithm that I built is working correctly.
 
