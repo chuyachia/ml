@@ -120,7 +120,7 @@ The value of the weight decay parameter that results in the lowest cross-validat
 lambda[which.min(Ecv)]
 ```
 
-    ## [1] 0.09
+    ## [1] 0.16
 
 We can see from the following graph that the in-sample error (red line) increases as the weight decay parameter lambda gets larger. This is because what lambda does is essentially to constrain the extent to which the weights of the model can vary to capture the training data points. This results in a higher in-sample error. However, by constraining the variation of the weights, we can potentially obtain a better out-of-sample performance as shown by the decreasing cross-validation error (blue line) up to the optimal point when the cross-validation error is the lowest.
 
@@ -138,7 +138,7 @@ ggplot(GraphD,aes(x=Lambda,y=Error,group=Type,colour=Type))+
 
 ### Final hypothesis
 
-Having decided the value of lambda to use, I train the model with all the observations in the data set and obtain the final hypothesis. The estimation of the out-of-sample of this model is the cross-validation error obtained earlier with the chosen lambda. Note that since we've deliberately chosen the best performer (lambda with the lowest cross-validation error), the cross-validation error is no longer an unbiased estimator of the out-of-sample error.
+Having decided the value of lambda to use, I train the model with all the observations in the data set and obtain the final hypothesis. The estimation of the out-of-sample of this model is the cross-validation error obtained earlier with the chosen lambda.
 
 ``` r
 ## Final hypothesis
@@ -146,7 +146,7 @@ nnglass <- nnet(X, Y, size =10, rang = 0.1,decay =lambda[which.min(Ecv)], maxit 
 min(Ecv)
 ```
 
-    ## [1] 0.2860952
+    ## [1] 0.283619
 
 Made with a visualization tool created by Beck MW, the following graph shows the structure of the trained neural network which contains 8 inputs, 10 hidden units in 1 layer and 6 outputs.
 
