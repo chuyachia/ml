@@ -32,7 +32,7 @@ I am going to build a neural network for multiclass classification so my output 
 ``` r
 library(dplyr)
 ## Data
-data <- read.table("C:/Users/client/Desktop/data/glass.data",dec=".",sep=",")
+data <- read.table("glass.data",dec=".",sep=",")
 X_1 <- data %>% select(-c(V1,V2,V11)) %>%
   apply(2,FUN=function(column){return((column-mean(column))/sd(column))} )
 n_data <- nrow(X_1)
