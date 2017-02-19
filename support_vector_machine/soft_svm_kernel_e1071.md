@@ -26,7 +26,7 @@ V11 is the response variable with 2 for benign and 4 for malignant.
 
 ``` r
 library(dplyr)
-bcancer <- read.table("C:/Users/Client/Desktop/data/breast_cancer.data",sep=",",stringsAsFactors = F)
+bcancer <- read.table("breast_cancer.data",sep=",",stringsAsFactors = F)
 bcancer$V7 <- as.numeric(bcancer$V7)
 bcancer <- bcancer[-which(is.na(bcancer$V7)),] #V7 contains some NA data
 bcancer <- bcancer %>% select(-V1)# V1 is the sample code number
@@ -82,7 +82,9 @@ for (i in 1:9){
 grid.arrange(p1, p2,p3,p4,p5,p6,p7,p8,p9,ncol=3)
 ```
 
-![](soft_svm_kernel_e1071_files/figure-markdown_github/unnamed-chunk-4-1.png) To prepare for the model, I label the malignant observations 1 and the benign ones -1. I then randomly sample 300 observations for training and leave the rest for testing.
+![](soft_svm_kernel_e1071_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+To prepare for the model, I label the malignant observations 1 and the benign ones -1. I then randomly sample 300 observations for training and leave the rest for testing.
 
 ``` r
 x <- bcancer %>% select(-V11)
@@ -143,7 +145,7 @@ table(predict=y_pred,diagnosis=y[-train])
     ##      -1 249  11
     ##      1    3 120
 
-**svm** function allows us to assign different weights to different classes fo data. This is useful when the data classes are unbalanced or when we have some reasons to be more concerned about one type of error than the other. To assign different weights, we simply need to add a **class.weights ** argument to the function.
+**svm** function allows us to assign different weights to different classes fo data. This is useful when the data classes are unbalanced or when we have some reasons to be more concerned about one type of error than the other. To assign different weights, we simply need to add a **class.weights** argument to the function.
 
 ``` r
 model <- svm(x=x[train,],y=y[train],scale=FALSE,kernel="radial",
@@ -163,4 +165,4 @@ table(predict=y_pred,diagnosis=y[-train])
     ##      -1 244   0
     ##      1    8 131
 
-Now this result looks better. As we really don't want to predict a breast cell as benign while it is actually malignant, I assign a weight of 0.9 to the malignant case and 0.1 to the benign case. This reduces the false negative rate down to zero at the expense of increasing the false positive rate (false alarm).
+Now this result looks better. As we really don't want to predict a breast cell as benign while it is actually malignant, I assign a weight of 0.9 to malignant cases and 0.1 to benign case. This reduces the false negative rate down to zero at the expense of increasing the false positive rate (false alarm). Note that this weight adjustment also increases the overall accuracy of the model. I think this is because the data set that we have here is somehow unbalanced with almost twice as many benign cases as malignant cases. By assigning more weights to malignant cases, we also compensate for this unbalance.
