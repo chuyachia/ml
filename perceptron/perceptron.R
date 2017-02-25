@@ -46,4 +46,4 @@ while (length(countvec)<100) # repeat 100 runs
   Eoutvec <- rbind(Eoutvec,Eout) 
 }
 mean(Eoutvec) ## Average classification error of 100 rounds
-
+table(predicted=sign(Y_hat_test),observed=Y_test)

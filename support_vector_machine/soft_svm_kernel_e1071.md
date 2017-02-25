@@ -137,13 +137,13 @@ length(which(y_pred==y[-train]))/length(y[-train]) # out-of-sample accuracy
 However, if we look at the confusion matrix of the model, we can notice a worrying high false negative rate (malignant cells being predicted as benign). In the context of breast cancer, the consequence of this type error can be a lot more serious than the opposite case when a breast benign cell is predicted malignant and we should take this fact into account in our model.
 
 ``` r
-table(predict=y_pred,diagnosis=y[-train])
+table(actual=y[-train],predicted=y_pred)
 ```
 
-    ##        diagnosis
-    ## predict  -1   1
-    ##      -1 249  11
-    ##      1    3 120
+    ##       predicted
+    ## actual  -1   1
+    ##     -1 249   3
+    ##     1   11 120
 
 **svm** function allows us to assign different weights to different classes fo data. This is useful when the data classes are unbalanced or when we have some reasons to be more concerned about one type of error than the other. To assign different weights, we simply need to add a **class.weights** argument to the function.
 
@@ -157,12 +157,12 @@ length(which(y_pred==y[-train]))/length(y[-train])
     ## [1] 0.9791123
 
 ``` r
-table(predict=y_pred,diagnosis=y[-train])
+table(actual=y[-train],predicted=y_pred)
 ```
 
-    ##        diagnosis
-    ## predict  -1   1
-    ##      -1 244   0
-    ##      1    8 131
+    ##       predicted
+    ## actual  -1   1
+    ##     -1 244   8
+    ##     1    0 131
 
-Now this result looks better. As we really don't want to predict a breast cell as benign while it is actually malignant, I assign a weight of 0.9 to malignant cases and 0.1 to benign case. This reduces the false negative rate down to zero at the expense of increasing the false positive rate (false alarm). Note that this weight adjustment also increases the overall accuracy of the model. I think this is because the data set that we have here is somehow unbalanced with almost twice as many benign cases as malignant cases. By assigning more weights to malignant cases, we also compensate for this unbalance.
+Now this result looks better. As we really don't want to predict a breast cell as benign while it is actually malignant, I assign a weight of 0.9 to malignant cases and 0.1 to benign case. This reduces the false negative rate down to zero at the expense of increasing the false positive rate (false alarm). Note that this weight adjustment also increases the overall accuracy of the model. I think this is because the data set that we have here is somehow unbalanced with almost twice as many benign cases as malignant cases. Therefore, by assigning more weights to the malignant cases, we actually compensated for this unbalance.
